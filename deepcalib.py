@@ -1,9 +1,9 @@
 import cv2
 import numpy as np
 from keras.applications.inception_v3 import InceptionV3
-from keras.applications.imagenet_utils import preprocess_input
 from keras.models import Model
 from keras.layers import Dense, Flatten, Input
+import tensorflow as tf
 
 
 # Adapted from https://github.com/alexvbogdan/DeepCalib
@@ -32,8 +32,7 @@ def load_deepcalib_regressor(weights_file):
 
     return model
 
-
-def preprocess_img(img_path, input_size=(299, 299)):
+def load_and_preprocess(img_path, input_size=(299, 299)):
     """
     Preprocesses input image as needed for the network
 
@@ -44,10 +43,14 @@ def preprocess_img(img_path, input_size=(299, 299)):
     image = cv2.imread(img_path)
     image = cv2.resize(image, input_size)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    
+    return preprocess_img(image)
+
+
+def preprocess_img(image):
     image = image / 255.
     image -= 0.5
     image *= 2.
-    image = np.expand_dims(image, 0)
-    image = preprocess_input(image) 
+    image = tf.keras.applications.inception_v3.preprocess_input(image)
     
     return image
