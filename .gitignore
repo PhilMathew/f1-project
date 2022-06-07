@@ -131,3 +131,4 @@ dmypy.json
 # Omit large video files ond frame folders
 *.mp4
 video_output/
+test_laps
